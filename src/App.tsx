@@ -1,15 +1,22 @@
+import { BrowserRouter } from "react-router";
+import { CartProvider } from "./context/CartContext";
+import { ProductsProvider } from "./context/ProductsContext";
+import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
-import Home from "./pages/Home";
-
-
+import AppRouter from "./routes/AppRouter";
 
 function App() {
   return (
-    <>
-      <Navbar />
-      <Home />
-
-    </>
+    <BrowserRouter>
+      <AuthProvider>
+        <ProductsProvider>
+          <CartProvider>
+            <Navbar />
+            <AppRouter />
+          </CartProvider>
+        </ProductsProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
