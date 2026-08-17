@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { useAuth } from "../context/AuthContext";
+import logo from "../assets/logo.png";
 
 function Login() {
     const { user, login, logout, isAdmin } = useAuth();
@@ -72,7 +73,7 @@ function Login() {
                     style={{ background: "radial-gradient(circle, #d97706, transparent 70%)" }} />
                 <div className="relative">
                     <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-base bg-clay">B</div>
+                        <img src={logo} alt="Boutique" className="w-10 h-10 rounded-full object-cover" />
                         <span className="font-display text-2xl font-black tracking-tight text-cream">Boutique</span>
                     </div>
                 </div>

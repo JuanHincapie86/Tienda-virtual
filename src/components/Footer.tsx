@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { useAuth } from "../context/AuthContext";
+import logo from "../assets/logo.png";
 
 function Footer() {
     const { isAdmin } = useAuth();
@@ -10,9 +11,7 @@ function Footer() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
                     <div className="lg:col-span-1">
                         <div className="flex items-center gap-2.5 mb-4">
-                            <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-base bg-clay">
-                                B
-                            </div>
+                            <img src={logo} alt="Boutique" className="w-10 h-10 rounded-full object-cover" />
                             <span className="font-display text-2xl font-black tracking-tight text-cream">
                                 Boutique
                             </span>

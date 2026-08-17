@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router";
 import { useCart } from "../hooks/useCart";
 import { useAuth } from "../context/AuthContext";
+import logo from "../assets/logo.png";
 
 function Navbar() {
     const { totalItems } = useCart();
@@ -29,9 +30,7 @@ function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
                 {/* Brand */}
                 <Link to="/" className="flex items-center gap-2.5 no-underline group shrink-0">
-                    <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-base bg-clay transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-105">
-                        B
-                    </div>
+                    <img src={logo} alt="Boutique" className="w-10 h-10 rounded-full object-cover transition-transform duration-300 group-hover:scale-105" />
                     <span className="font-display text-2xl font-black tracking-tight text-ink">
                         Boutique
                     </span>
