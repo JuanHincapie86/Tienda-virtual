@@ -9,29 +9,41 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole = "admin" }) => {
-    const { user, isAdmin } = useAuth();
+    const { user, isAdmin, loading } = useAuth();
+
+    if (loading) {
+        return (
+            <main className="min-h-[60vh] flex flex-col justify-center items-center gap-5 text-stone-500">
+                <div className="relative w-14 h-14">
+                    <div className="absolute inset-0 rounded-full border-[3px] border-orange-500/10" />
+                    <div className="absolute inset-0 rounded-full border-[3px] border-transparent border-t-orange-600 border-r-orange-400 animate-spin" />
+                </div>
+                <p className="font-semibold text-sm">Verificando sesión...</p>
+            </main>
+        );
+    }
 
     if (!user) {
         return (
-            <main className="pt-24 pb-16 min-h-screen flex items-center justify-center px-4 text-center">
-                <div className="bg-white/50 backdrop-blur-xl border border-white/80 rounded-2xl p-8 shadow-xl shadow-slate-900/5 max-w-md w-full animate-fade-in-up">
-                    <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-600">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            <main className="min-h-[70vh] flex items-center justify-center px-4 text-center">
+                <div className="max-w-md">
+                    <div className="w-14 h-14 mx-auto mb-5 rounded-2xl flex items-center justify-center bg-clay/10 text-clay">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                         </svg>
                     </div>
-                    <h2 className="text-xl font-black text-slate-900 mb-2">
+                    <h2 className="font-display text-2xl font-bold text-ink mb-2">
                         Acceso Restringido
                     </h2>
-                    <p className="text-slate-500 text-xs sm:text-sm mb-6 leading-relaxed">
-                        Debes iniciar sesión como <strong>Administrador</strong> para agregar nuevos productos.
+                    <p className="text-stone-400 text-sm mb-7 leading-relaxed">
+                        Debes iniciar sesión como <strong className="text-stone-600">Administrador</strong> para agregar nuevos productos.
                     </p>
-                    <Link
-                        to="/login"
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-violet-800 text-white rounded-xl no-underline font-bold text-xs sm:text-sm border border-white/40 shadow-md shadow-violet-500/30"
-                    >
-                        Iniciar Sesión como Admin →
+                    <Link to="/login" className="btn-primary text-sm px-6 py-3">
+                        Iniciar Sesión como Admin
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+                        </svg>
                     </Link>
                 </div>
             </main>
@@ -40,31 +52,25 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requir
 
     if (requiredRole === "admin" && !isAdmin) {
         return (
-            <main className="pt-24 pb-16 min-h-screen flex items-center justify-center px-4 text-center">
-                <div className="bg-white/50 backdrop-blur-xl border border-rose-500/20 rounded-2xl p-8 shadow-xl shadow-rose-900/5 max-w-md w-full animate-fade-in-up">
-                    <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-600">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+            <main className="min-h-[70vh] flex items-center justify-center px-4 text-center">
+                <div className="max-w-md">
+                    <div className="w-14 h-14 mx-auto mb-5 rounded-2xl flex items-center justify-center bg-rose-500/10 text-rose-500">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
                         </svg>
                     </div>
-                    <h2 className="text-xl font-black text-slate-900 mb-2">
+                    <h2 className="font-display text-2xl font-bold text-ink mb-2">
                         Permisos Insuficientes
                     </h2>
-                    <p className="text-slate-500 text-xs sm:text-sm mb-6 leading-relaxed">
-                        Actualmente estás conectado como <strong className="text-sky-600">Cliente</strong> ({user.email}). Solo los usuarios con rol <strong>Administrador</strong> pueden agregar productos.
+                    <p className="text-stone-400 text-sm mb-7 leading-relaxed">
+                        Actualmente estás conectado como <strong className="text-clay">Cliente</strong> ({user.email}). Solo los usuarios con rol <strong className="text-stone-600">Administrador</strong> pueden agregar productos.
                     </p>
                     <div className="flex gap-3 justify-center flex-wrap">
-                        <Link
-                            to="/login"
-                            className="px-5 py-2.5 bg-gradient-to-r from-violet-600 to-violet-800 text-white rounded-xl no-underline font-bold text-xs border border-white/40 shadow-sm"
-                        >
+                        <Link to="/login" className="btn-primary text-sm px-5 py-2.5">
                             Cambiar a Administrador
                         </Link>
-                        <Link
-                            to="/productos"
-                            className="px-5 py-2.5 bg-white/60 border border-white text-slate-700 rounded-xl no-underline font-bold text-xs"
-                        >
+                        <Link to="/productos" className="btn-secondary text-sm px-5 py-2.5">
                             Ver productos
                         </Link>
                     </div>

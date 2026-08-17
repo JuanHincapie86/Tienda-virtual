@@ -1,49 +1,45 @@
-import React, { createContext, useState, useEffect, useContext, type ReactNode } from 'react';
+import React, { createContext, useState, useEffect, useContext, useCallback, type ReactNode } from 'react';
 import type { Product } from '../types/Product';
-import { getProducts } from '../services/api';
+import { getProducts, addProduct as createProduct } from '../services/api';
 
 interface ProductsContextType {
   products: Product[];
   loading: boolean;
   error: string | null;
-  addProduct: (product: Omit<Product, 'id'>) => void;
+  addProduct: (product: Omit<Product, 'id'>) => Promise<void>;
+  refresh: () => Promise<void>;
 }
 
 export const ProductsContext = createContext<ProductsContextType | undefined>(undefined);
 
-let localIdCounter = 10000;
-
 export const ProductsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [apiProducts, setApiProducts] = useState<Product[]>([]);
-  const [localProducts, setLocalProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        setLoading(true);
-        const data = await getProducts();
-        setApiProducts(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Error al obtener productos');
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
+  const refresh = useCallback(async () => {
+    try {
+      const data = await getProducts();
+      setProducts(data);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al obtener productos');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const addProduct = (product: Omit<Product, 'id'>) => {
-    localIdCounter += 1;
-    const newProduct: Product = { ...product, id: localIdCounter };
-    setLocalProducts((prev) => [newProduct, ...prev]);
+  useEffect(() => {
+    void Promise.resolve().then(refresh);
+  }, [refresh]);
+
+  const addProduct = async (product: Omit<Product, 'id'>) => {
+    await createProduct(product);
+    await refresh();
   };
 
-  const products = [...localProducts, ...apiProducts];
-
   return (
-    <ProductsContext.Provider value={{ products, loading, error, addProduct }}>
+    <ProductsContext.Provider value={{ products, loading, error, addProduct, refresh }}>
       {children}
     </ProductsContext.Provider>
   );

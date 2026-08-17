@@ -1,64 +1,84 @@
+import { supabase } from "./supabase";
 import type { Product } from "../types/Product";
 
-const API_URL = "https://fakestoreapi.com/products";
+interface ProductRow {
+    id: number;
+    nombre: string;
+    precio: number;
+    imagen: string | null;
+    descripcion: string | null;
+    categoria: string | null;
+    created_at: string;
+}
+
+function mapRow(row: ProductRow): Product {
+    return {
+        id: row.id,
+        nombre: row.nombre,
+        precio: Number(row.precio),
+        imagen: row.imagen ?? "",
+        descripcion: row.descripcion ?? "",
+        categoria: row.categoria ?? "",
+    };
+}
 
 export async function getProducts(): Promise<Product[]> {
-  try {
-    const response = await fetch(API_URL);
+    const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-    if (!response.ok) {
-      throw new Error(`Error en la petición: ${response.status} ${response.statusText}`);
-    }
+    if (error) throw new Error(error.message);
 
-    const data = await response.json();
-
-    if (!Array.isArray(data)) {
-      throw new Error("Respuesta inválida de la API");
-    }
-
-    return data.map((producto: any) => ({
-      id: producto.id,
-      nombre: producto.title || "Producto sin nombre",
-      precio: producto.price || 0,
-      imagen: producto.image || "",
-      descripcion: producto.description || "",
-      categoria: producto.category || "",
-    }));
-  } catch (error) {
-    console.error("Error en getProducts:", error);
-    throw error;
-  }
+    return (data ?? []).map(mapRow);
 }
 
 export const fetchProducts = getProducts;
 
 export async function getProductById(id: string | number): Promise<Product> {
-  try {
-    const response = await fetch(`${API_URL}/${id}`);
+    const { data, error } = await supabase
+        .from("products")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
 
-    if (!response.ok) {
-      throw new Error(`No se encontró el producto con ID ${id}`);
-    }
+    if (error) throw new Error(error.message);
+    if (!data) throw new Error(`Producto con ID ${id} no encontrado`);
 
-    const producto = await response.json();
-
-    if (!producto || typeof producto !== "object" || !producto.id) {
-      throw new Error(`Producto con ID ${id} no encontrado`);
-    }
-
-    return {
-      id: producto.id,
-      nombre: producto.title || "Producto sin nombre",
-      precio: producto.price || 0,
-      imagen: producto.image || "",
-      descripcion: producto.description || "",
-      categoria: producto.category || "",
-    };
-  } catch (error) {
-    console.error(`Error en getProductById(${id}):`, error);
-    throw error;
-  }
+    return mapRow(data as ProductRow);
 }
 
 export const fetchProductById = getProductById;
 export const fetchProductsById = getProductById;
+
+export async function addProduct(product: Omit<Product, "id">): Promise<Product> {
+    const { data, error } = await supabase
+        .from("products")
+        .insert({
+            nombre: product.nombre,
+            precio: product.precio,
+            imagen: product.imagen || null,
+            descripcion: product.descripcion,
+            categoria: product.categoria,
+        })
+        .select()
+        .single();
+
+    if (error) throw new Error(error.message);
+
+    return mapRow(data as ProductRow);
+}
+
+export async function uploadProductImage(file: File): Promise<string> {
+    const extension = file.name.split(".").pop() || "png";
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`;
+
+    const { error } = await supabase.storage
+        .from("product-images")
+        .upload(path, file, { contentType: file.type });
+
+    if (error) throw new Error(error.message);
+
+    const { data } = supabase.storage.from("product-images").getPublicUrl(path);
+    return data.publicUrl;
+}

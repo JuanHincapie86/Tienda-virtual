@@ -2,32 +2,25 @@ import { Link } from "react-router";
 
 function NotFound() {
     return (
-        <main className="pt-24 pb-16 min-h-screen flex items-center justify-center px-4 text-center">
-            <div className="bg-white/50 backdrop-blur-xl border border-white/80 rounded-2xl p-8 sm:p-10 shadow-xl shadow-slate-900/5 max-w-md w-full animate-fade-in-up">
-                {/* 404 number */}
-                <div className="font-display text-7xl sm:text-8xl font-black leading-none bg-gradient-to-r from-violet-600 via-sky-500 to-rose-500 bg-clip-text text-transparent tracking-tighter mb-2">
-                    404
-                </div>
-
-                <h2 className="text-xl font-extrabold text-slate-900 mb-2">
+        <main className="min-h-[70vh] flex items-center justify-center px-4 text-center">
+            <div className="max-w-md animate-fade-in-up">
+                <p className="font-display text-8xl sm:text-9xl font-black leading-none tracking-tighter text-ink">
+                    4<span className="text-clay">0</span>4
+                </p>
+                <h2 className="font-display text-2xl font-bold text-ink mt-4 mb-3">
                     Página no encontrada
                 </h2>
-
-                <p className="text-slate-500 text-xs sm:text-sm mb-8">
-                    La página que buscas no existe o ha sido movida a otra dirección.
+                <p className="text-stone-400 text-sm mb-8 max-w-xs mx-auto leading-relaxed">
+                    La página que buscas no existe o fue movida a otra dirección.
                 </p>
-
                 <div className="flex gap-3 justify-center flex-wrap">
-                    <Link
-                        to="/"
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-violet-800 text-white rounded-xl no-underline font-bold text-xs sm:text-sm border border-white/40 shadow-md shadow-violet-500/30 hover:-translate-y-0.5 transition-transform"
-                    >
+                    <Link to="/" className="btn-primary text-sm px-6 py-3">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                        </svg>
                         Volver al Inicio
                     </Link>
-                    <Link
-                        to="/productos"
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-white/60 border border-white text-slate-700 rounded-xl no-underline font-bold text-xs sm:text-sm hover:bg-white transition-colors"
-                    >
+                    <Link to="/productos" className="btn-secondary text-sm px-6 py-3">
                         Ver productos
                     </Link>
                 </div>

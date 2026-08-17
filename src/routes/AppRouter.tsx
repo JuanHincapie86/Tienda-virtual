@@ -7,6 +7,7 @@ import Home from "../pages/Home";
 import Products from "../pages/Products";
 import Cart from "../pages/Cart";
 import Login from "../pages/Login";
+import Register from "../pages/Register";
 import NotFound from "../pages/NotFound";
 import ProductDetail from "../pages/ProductDetail";
 import AddProduct from "../pages/AddProduct";
@@ -31,6 +32,11 @@ function AppRouter() {
             <Route
                 path="/login"
                 element={<Login />}
+            />
+
+            <Route
+                path="/registro"
+                element={<Register />}
             />
 
             <Route
